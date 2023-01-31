@@ -29,14 +29,14 @@ function App() {
 				}
 				return [newTodo]
 			})
+		} else {
+			setTodos([newTodo])
 		}
 
 		setTodo('')
 	}
 
 	const toggleCompleted = (id: Todo['id']) => {
-		console.log('toggled')
-
 		setTodos((prev) => {
 			if (prev) {
 				return prev.map((todo) => {
@@ -88,6 +88,7 @@ function App() {
 
 	useEffect(() => {
 		const localTodos = localStorage.getItem('todos')
+
 		if (localTodos) {
 			setTodos(JSON.parse(localTodos))
 		}

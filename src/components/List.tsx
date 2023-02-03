@@ -1,22 +1,20 @@
 import { useRef } from 'react'
+import { IList } from '../types'
 import { Reorder } from 'framer-motion'
 
-type Todo = {
-	id: number
-	text: string
-	completed: boolean
-}
-
-//Lists
-interface IList {
-	todos: Todo[]
-	setTodos: (todo: Todo[]) => void
-	toggleCompleted: (id: number) => void
-	handleDelete: (id: number) => void
-}
-
-const List = ({ todos, setTodos, toggleCompleted, handleDelete }: IList) => {
+const List = ({
+	todos,
+	setTodos,
+	toggleCompleted,
+	handleDelete,
+	handleBasedOn,
+	isSelected,
+}: IList) => {
 	const constraintsRef = useRef(null)
+
+	if (todos.length === 0) {
+		return <p className="noTasks">No ToDo/s added yet</p>
+	}
 
 	return (
 		<Reorder.Group
@@ -26,6 +24,12 @@ const List = ({ todos, setTodos, toggleCompleted, handleDelete }: IList) => {
 			ref={constraintsRef}
 		>
 			{todos.map((todo, index) => {
+				const isCompleted =
+					(todo.subsTodos &&
+						todo.subsTodos?.length > 0 &&
+						!todo.subsTodos?.some((todo) => !todo.completed)) ||
+					todo.completed
+
 				return (
 					<Reorder.Item
 						value={todo}
@@ -40,10 +44,10 @@ const List = ({ todos, setTodos, toggleCompleted, handleDelete }: IList) => {
 						<span
 							className="todoItem"
 							style={{
-								textDecoration: todo.completed
+								textDecoration: isCompleted
 									? 'line-through'
 									: 'none',
-								backgroundColor: todo.completed
+								backgroundColor: isCompleted
 									? 'darkgreen'
 									: index % 2 === 0
 									? 'dimgray'
@@ -57,6 +61,21 @@ const List = ({ todos, setTodos, toggleCompleted, handleDelete }: IList) => {
 							{' '}
 							X{' '}
 						</button>
+						{!isSelected && (
+							<button
+								onClick={() => handleBasedOn(todo.id)}
+								className="basedOn"
+								style={{
+									backgroundColor:
+										todo.subsTodos &&
+										todo.subsTodos.length > 0
+											? 'rgba(39, 245, 161, 0.4)'
+											: '',
+								}}
+							>
+								↳
+							</button>
+						)}
 					</Reorder.Item>
 				)
 			})}

@@ -147,3 +147,28 @@ input {
 .noTasks {
   text-align: center;
 }
+
+.bread {
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+
+.bread:hover {
+  background-color: cadetblue;
+}
+
+.basedOn:hover {
+  background-color: rgba(39, 245, 161, 0.8) !important;
+}
+
+.selectedTitle {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: cadetblue;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+}

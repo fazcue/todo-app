@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 import { IList } from '../types'
 import { Reorder } from 'framer-motion'
+import alert from '../services/alert'
 
 const List = ({
 	todos,
@@ -8,6 +9,7 @@ const List = ({
 	toggleCompleted,
 	handleDelete,
 	handleBasedOn,
+	handleEdit,
 	isSelected,
 }: IList) => {
 	const constraintsRef = useRef(null)
@@ -55,8 +57,14 @@ const List = ({
 							}}
 							onDoubleClick={() => toggleCompleted(todo.id)}
 						>
-							{todo.text}
+							{todo.title}
 						</span>
+						<button
+							onClick={() => alert.editToDo(todo, handleEdit)}
+						>
+							{' '}
+							E{' '}
+						</button>
 						<button onClick={() => handleDelete(todo.id)}>
 							{' '}
 							X{' '}

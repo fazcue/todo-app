@@ -2,6 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Todo } from './types'
 import List from './components/List'
 
+interface OldTodo {
+	id: number
+	text: string
+	completed: boolean
+	subsTodos?: Todo[]
+}
+
 function App() {
 	const [todos, setTodos] = useState<Todo[] | null>(null)
 	const [todo, setTodo] = useState<string>('')
@@ -16,7 +23,7 @@ function App() {
 	const handleAdd = () => {
 		const newTodo: Todo = {
 			id: Date.now(),
-			text: todo,
+			title: todo,
 			completed: false,
 		}
 
@@ -152,6 +159,58 @@ function App() {
 		}
 	}
 
+	const handleEdit = async (
+		currentTodo: Todo,
+		field: 'title' | 'description',
+		value: string
+	) => {
+		let newSelected: Todo | null = null
+		if (selected) {
+			newSelected = { ...selected }
+
+			if (newSelected.subsTodos) {
+				newSelected.subsTodos = newSelected.subsTodos.map((todo) => {
+					if (todo.id === currentTodo.id) {
+						return {
+							...todo,
+							[field]: value,
+						}
+					}
+					return todo
+				})
+			}
+
+			setSelected(newSelected)
+
+			setTodos((prev) => {
+				if (prev) {
+					return prev.map((todo) => {
+						if (todo.id === newSelected?.id) {
+							return newSelected
+						}
+						return todo
+					})
+				}
+				return null
+			})
+		} else {
+			setTodos((prev) => {
+				if (prev) {
+					return prev.map((todo) => {
+						if (todo.id === currentTodo.id) {
+							return {
+								...todo,
+								[field]: value,
+							}
+						}
+						return todo
+					})
+				}
+				return null
+			})
+		}
+	}
+
 	const handleUserKeyPress = useCallback(
 		(event: KeyboardEvent) => {
 			const { key } = event
@@ -194,7 +253,31 @@ function App() {
 		const localTodos = localStorage.getItem('todos')
 
 		if (localTodos) {
-			setTodos(JSON.parse(localTodos))
+			//convert ToDos to new format
+			const todosArray = JSON.parse(localTodos)
+
+			if (todosArray[0].text) {
+				const oldTodos: OldTodo[] = [...todosArray]
+
+				const newTodos = oldTodos.map((todo) => {
+					let newT: Todo = {
+						id: todo.id,
+						title: todo.text,
+						description: '',
+						completed: todo.completed,
+					}
+
+					if (todo.subsTodos) {
+						newT.subsTodos = todo.subsTodos
+					}
+
+					return newT
+				})
+
+				setTodos(newTodos)
+			} else {
+				setTodos(todosArray)
+			}
 		}
 	}, [])
 
@@ -257,7 +340,7 @@ function App() {
 							</button>
 							{` ↳ `}
 							<span className="selectedTitle">
-								{selected.text}
+								{selected.title}
 							</span>
 						</p>
 					)}
@@ -267,6 +350,7 @@ function App() {
 						toggleCompleted={toggleCompleted}
 						handleDelete={handleDelete}
 						handleBasedOn={handleBasedOn}
+						handleEdit={handleEdit}
 						isSelected={selected ? true : false}
 					/>
 				</>

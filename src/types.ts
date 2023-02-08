@@ -1,6 +1,7 @@
 type Todo = {
 	id: number
-	text: string
+	title: string
+	description?: string
 	completed: boolean
 	subsTodos?: Todo[]
 }
@@ -11,6 +12,7 @@ interface IList {
 	toggleCompleted: (id: number) => void
 	handleDelete: (id: number) => void
 	handleBasedOn: (id: Todo['id']) => void
+	handleEdit: (todo: Todo, field: 'title' | 'description', value: string) => void
 	isSelected: boolean
 }
 

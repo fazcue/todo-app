@@ -1,6 +1,5 @@
 import { Todo } from '../types'
 import { useEffect, useState } from 'react'
-
 interface Props {
 	todo: Todo
 	handleEdit: (
@@ -17,46 +16,56 @@ const Details = ({ todo, handleEdit }: Props): JSX.Element => {
 		setData(todo)
 	}, [todo])
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log('change', e.currentTarget.name, e.currentTarget.value)
-
-		let field: 'title' | 'description' | null = null
-
-		if (e.target.name === 'title' || e.target.name === 'description') {
-			field = e.target.name
-
-			setData((prev) => {
-				if (prev) {
-					return {
-						...prev,
-						[e.target.name]: e.target.value,
-					}
+	const handleTitle = (e: React.ChangeEvent<HTMLInputElement>): void => {
+		setData((prev) => {
+			if (prev) {
+				return {
+					...prev,
+					title: e.target.value,
 				}
-				return null
-			})
-			handleEdit(todo, field, e.target.value)
-		}
+			}
+			return null
+		})
+		handleEdit(todo, 'title', e.target.value)
+	}
+
+	const handleDescription = (
+		e: React.ChangeEvent<HTMLTextAreaElement>
+	): void => {
+		setData((prev) => {
+			if (prev) {
+				return {
+					...prev,
+					description: e.target.value,
+				}
+			}
+			return null
+		})
+		handleEdit(todo, 'description', e.target.value)
 	}
 
 	return (
-		<>
+		<div className="details">
+			<span style={{ fontSize: '16px' }}>Title</span>
 			<input
 				name="title"
 				value={data?.title || ''}
-				onChange={handleChange}
-				autoFocus
+				onChange={handleTitle}
 				maxLength={30}
 				autoComplete="off"
 			/>
-			<input
+			<span style={{ height: '4px' }} />
+			<span style={{ fontSize: '16px' }}>Description</span>
+			<textarea
 				name="description"
 				value={data?.description || ''}
-				onChange={handleChange}
-				autoFocus
-				maxLength={30}
+				onChange={handleDescription}
+				maxLength={120}
+				rows={5}
 				autoComplete="off"
 			/>
-		</>
+			<span className="howTo">Changes are auto saved</span>
+		</div>
 	)
 }
 

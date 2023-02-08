@@ -95,7 +95,7 @@ main {
   text-align: center;
   font-size: 14px;
   margin: 0;
-  line-height: 14px;
+  line-height: 16px;
   font-style: italic;
   color: dimgray;
 }
@@ -134,9 +134,8 @@ main {
   font-size: 12px;
 }
 
-input {
+input, textarea {
   min-width: 250px;
-  height: 20px;
   padding: 5px;
   font-size: 16px;
   display: flex;
@@ -171,4 +170,10 @@ input {
   background-color: cadetblue;
   cursor: pointer;
   transition: all 0.25s ease-in-out;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }

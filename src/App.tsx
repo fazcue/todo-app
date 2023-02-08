@@ -2,13 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Todo } from './types'
 import List from './components/List'
 
-interface OldTodo {
-	id: number
-	text: string
-	completed: boolean
-	subsTodos?: Todo[]
-}
-
 function App() {
 	const [todos, setTodos] = useState<Todo[] | null>(null)
 	const [todo, setTodo] = useState<string>('')
@@ -253,31 +246,7 @@ function App() {
 		const localTodos = localStorage.getItem('todos')
 
 		if (localTodos) {
-			//convert ToDos to new format
-			const todosArray = JSON.parse(localTodos)
-
-			if (todosArray[0].text) {
-				const oldTodos: OldTodo[] = [...todosArray]
-
-				const newTodos = oldTodos.map((todo) => {
-					let newT: Todo = {
-						id: todo.id,
-						title: todo.text,
-						description: '',
-						completed: todo.completed,
-					}
-
-					if (todo.subsTodos) {
-						newT.subsTodos = todo.subsTodos
-					}
-
-					return newT
-				})
-
-				setTodos(newTodos)
-			} else {
-				setTodos(todosArray)
-			}
+			setTodos(JSON.parse(localTodos))
 		}
 	}, [])
 
